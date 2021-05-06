@@ -1,6 +1,24 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Container } from "./styles";
 
+interface Transaction {
+  id: number;
+  title: string;
+  amount: number;
+  type: string;
+  category: string;
+  createdAt: Date;
+}
+
 export const TransactionTable = () => {
+  const [transactions, setTransaction] = useState<Transaction[]>();
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/api/transactions')
+      .then(response => setTransaction(response.data));
+  }, []);
+
   return (
     <Container>
       <table>
@@ -12,20 +30,15 @@ export const TransactionTable = () => {
             <th>Data</th>
           </tr>
         </thead>
-
         <tbody>
-          <tr>
-            <td>Desenvolvimento de website</td>
-            <td className="deposit">R$12.000</td>
-            <td>Desenvolvimento</td>
-            <td>20/02/2021</td>
-          </tr>
-          <tr>
-            <td>Aluguel</td>
-            <td className="withdraw">R$500</td>
-            <td>Casa</td>
-            <td>05/02/2021</td>
-          </tr>
+          {transactions && transactions.map(transition =>
+            <tr>
+              <td>{transition.title}</td>
+              <td className={transition.type}>R${transition.amount}</td>
+              <td>{transition.category}</td>
+              <td>{transition.createdAt}</td>
+            </tr>
+          )}
         </tbody>
       </table>
     </Container>
