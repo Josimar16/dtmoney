@@ -1,49 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
-
-import { api } from "../../services/api";
-
+import { useTransaction } from "../../hooks/useTransactions";
 import { Container } from "./styles";
-
-interface Transaction {
-  id: number;
-  title: string;
-  amount: number;
-  type: string;
-  category: string;
-  createdAt: string;
-}
+import { formatAmountToCurrencyPTBR, formatDateToPTBR } from "../../utils";
 
 export const TransactionTable = () => {
-  const [transactions, setTransaction] = useState<Transaction[]>();
-
-  useEffect(() => {
-    api.get('http://localhost:3000/api/transactions')
-      .then(response => setTransaction(response.data.transactions));
-  }, []);
-
-  function formatAmountToCurrencyPTBR(amount: number): string {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(amount)
-  }
-
-  function formatDateToPTBR(date: string): string {
-    return new Intl.DateTimeFormat('pt-BR').format(new Date(date))
-  }
-
-  const formatTransaction = useMemo(() => {
-    return transactions?.map(transition => {
-      return {
-        id: transition.id,
-        title: transition.title,
-        amount: formatAmountToCurrencyPTBR(transition.amount),
-        type: transition.type,
-        category: transition.category,
-        createdAt: formatDateToPTBR(transition.createdAt),
-      }
-    });
-  }, [transactions]);
+  const { transactions } = useTransaction();
 
   return (
     <Container>
@@ -57,12 +17,12 @@ export const TransactionTable = () => {
           </tr>
         </thead>
         <tbody>
-          {transactions && formatTransaction?.map(transition =>
+          {transactions && transactions.map(transition =>
             <tr key={transition.id}>
               <td>{transition.title}</td>
-              <td className={transition.type}>{transition.amount}</td>
+              <td className={transition.type}>{formatAmountToCurrencyPTBR(transition.amount)}</td>
               <td>{transition.category}</td>
-              <td>{transition.createdAt}</td>
+              <td>{formatDateToPTBR(transition.createdAt)}</td>
             </tr>
           )}
         </tbody>
