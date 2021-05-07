@@ -1,23 +1,9 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useTransaction } from "../../hooks/useTransactions";
 import { Container } from "./styles";
-
-interface Transaction {
-  id: number;
-  title: string;
-  amount: number;
-  type: string;
-  category: string;
-  createdAt: Date;
-}
+import { formatAmountToCurrencyPTBR, formatDateToPTBR } from "../../utils";
 
 export const TransactionTable = () => {
-  const [transactions, setTransaction] = useState<Transaction[]>();
-
-  useEffect(() => {
-    axios.get('http://localhost:3000/api/transactions')
-      .then(response => setTransaction(response.data));
-  }, []);
+  const { transactions } = useTransaction();
 
   return (
     <Container>
@@ -25,18 +11,18 @@ export const TransactionTable = () => {
         <thead>
           <tr>
             <th>Título</th>
-            <th>Preço</th>
+            <th>Valor</th>
             <th>Categória</th>
             <th>Data</th>
           </tr>
         </thead>
         <tbody>
           {transactions && transactions.map(transition =>
-            <tr>
+            <tr key={transition.id}>
               <td>{transition.title}</td>
-              <td className={transition.type}>R${transition.amount}</td>
+              <td className={transition.type}>{formatAmountToCurrencyPTBR(transition.amount)}</td>
               <td>{transition.category}</td>
-              <td>{transition.createdAt}</td>
+              <td>{formatDateToPTBR(transition.createdAt)}</td>
             </tr>
           )}
         </tbody>
