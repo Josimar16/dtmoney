@@ -25,7 +25,7 @@ export const TransactionTable = () => {
         <thead>
           <tr>
             <th>Título</th>
-            <th>Preço</th>
+            <th>Valor</th>
             <th>Categória</th>
             <th>Data</th>
           </tr>
