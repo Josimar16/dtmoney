@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { GlobalStyle } from './styles/global';
+import { TransactionsProvider } from './hooks/useTransactions';
 
 import { Header } from './components/Header';
 import { Dashboard } from './components/Dashboard';
@@ -17,7 +18,7 @@ export const App = () => {
   }, []);
 
   return (
-    <>
+    <TransactionsProvider>
       <Header
         onOpenNewTransactionModal={handleOpenNewTransactionModal}
       />
@@ -30,6 +31,6 @@ export const App = () => {
       />
 
       <GlobalStyle />
-    </>
+    </TransactionsProvider>
   );
 }
